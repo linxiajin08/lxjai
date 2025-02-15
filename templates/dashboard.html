@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LXJAI Control Panel</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LXJAI 控制中心</h1>
+        
+        <!-- 状态监控 -->
+        <div class="card">
+            <h2>实时状态</h2>
+            <div id="status">
+                <p>CPU使用率: <span id="cpu">-</span>%</p>
+                <p>内存使用率: <span id="memory">-</span>%</p>
+                <p>OS: <span id="os">-</span></p>
+            </div>
+        </div>
+
+        <!-- 配置管理 -->
+        <div class="card">
+            <h2>系统配置</h2>
+            <div class="grid">
+                <div>
+                    <label>API密钥:</label>
+                    <input type="text" id="apiKey">
+                </div>
+                <div>
+                    <label>安全等级:</label>
+                    <select id="securityLevel">
+                        <option value="0">仅监视</option>
+                        <option value="1">基本操作</option>
+                        <option value="2">完全控制</option>
+                    </select>
+                </div>
+                <button onclick="saveConfig()">保存配置</button>
+            </div>
+        </div>
+
+        <!-- 命令终端 -->
+        <div class="card">
+            <h2>命令终端</h2>
+            <div>
+                <input type="text" id="commandInput" 
+                      placeholder="输入指令...">
+                <button onclick="executeCommand()">执行</button>
+                <div id="output" style="margin-top:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 实时状态更新
+        setInterval(() => {
+            fetch('/api/status')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('cpu').textContent = data.cpu_usage;
+                    document.getElementById('memory').textContent = data.memory_usage;
+                    document.getElementById('os').textContent = data.os;
+                });
+        }, 3000);
+
+        // 加载配置
+        fetch('/api/config')
+            .then(r => r.json())
+            .then(config => {
+                document.getElementById('apiKey').value = config.api_key;
+                document.getElementById('securityLevel').value = config.security_level;
+            });
+
+        // 保存配置
+        function saveConfig() {
+            const config = {
+                api_key: document.getElementById('apiKey').value,
+                security_level: document.getElementById('securityLevel').value
+            };
+
+            fetch('/api/config', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(config)
+            }).then(() => alert('配置已保存'));
+        }
+
+        // 执行命令
+        function executeCommand() {
+            const cmdInput = document.getElementById('commandInput');
+            fetch('/api/execute', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: cmdInput.value})
+            }).then(r => r.json())
+              .then(data => {
+                  const output = document.getElementById('output');
+                  output.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${
+                      data.result}</div>`;
+                  cmdInput.value = '';
+              });
+        }
+    </script>
+</body>
+</html>
