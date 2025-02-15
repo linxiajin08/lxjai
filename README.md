@@ -1,3 +1,4 @@
+#基于自然语言创建工作流操控电脑AI
 # LXJAI Terminal Assistant 技术文档
 
 ## 📚 一、使用指南
