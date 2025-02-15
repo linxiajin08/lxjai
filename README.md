@@ -8,6 +8,7 @@
 ```bash
 pip install flask psutil
 python app.py
+当服务启动后，打开浏览器访问：http://localhost:5000
 ```
 
 # 输入测试命令
