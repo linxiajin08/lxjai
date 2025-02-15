@@ -11,7 +11,7 @@ python app.py
 当服务启动后，打开浏览器访问：http://localhost:5000
 目前API只支持硅基流动API
 如何获取API？
-https://cloud.siliconflow.cn/i/23vouPtP（免费15元额度）
+https://cloud.siliconflow.cn/i/23vouPtP或https://cloud.siliconflow.cn/i/r0mE4sE5（免费15元额度）
 
 ```
 
