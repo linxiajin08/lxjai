@@ -4,14 +4,11 @@
 
 ### 快速开始
 ```bash
-# 安装依赖
-pip install requests psutil tiktoken
 
-#打开文件并且修改第七行左右的API
-打开文件并且修改第七行左右的API
-
-# 初始化配置（首次运行自动生成）
-python lxjai_cli.py
+```bash
+pip install flask psutil
+python app.py
+```
 
 # 输入测试命令
 > check system
